@@ -23,27 +23,27 @@ public class JobApplication {
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name = "company_id")
+	@JoinColumn(name = "company_id", nullable = false)
 	private Company company;
 
 	@ManyToOne
-	@JoinColumn(name = "position_id")
+	@JoinColumn(name = "position_id", nullable = false)
 	private Position position;
 
-	@Column(name = "first_name", length = 100)
+	@Column(name = "first_name", length = 100, nullable = false)
 	private String firstName;
 
-	@Column(name = "last_name", length = 100)
+	@Column(name = "last_name", length = 100, nullable = false)
 	private String lastName;
 
-	@Column(name = "email", length = 100)
+	@Column(name = "email", length = 100, nullable = false)
 	private String email;
 
 	@Column(name = "cv_url", length = 200)
 	private String cvUrl;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "company_id", referencedColumnName = "id")
+	@JoinColumn(name = "application_id", referencedColumnName = "id")
 	private List<JobApplicationField> fields;
 
 	public Long getId() {
