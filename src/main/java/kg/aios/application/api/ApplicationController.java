@@ -1,6 +1,7 @@
 package kg.aios.application.api;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -87,14 +88,14 @@ public class ApplicationController {
 
 		return newApplication.getId();
 	}
-	
+
 	private static final String POSITION_ID = "positionId";
 	private static final String FIRST_NAME = "firstName";
 	private static final String LAST_NAME = "lastName";
 	private static final String EMAIL = "email";
 
-	@GetMapping("/search")
-	public List<JobApplicationDTO> searchApplications(@PathVariable("companyId") Long companyId,
+	@GetMapping("/filter")
+	public List<JobApplicationDTO> filterApplications(@PathVariable("companyId") Long companyId,
 			@RequestParam Map<String, String> allParams) {
 
 		JobApplication application = new JobApplication();
@@ -102,7 +103,7 @@ public class ApplicationController {
 		Company company = companyService.findById(companyId);
 
 		application.setCompany(company);
-		
+
 		if (allParams.containsKey(POSITION_ID)) {
 			application.setPosition(new Position());
 			application.getPosition().setId(Long.valueOf(allParams.get(POSITION_ID)));
@@ -117,19 +118,23 @@ public class ApplicationController {
 			application.setEmail(allParams.get(EMAIL));
 		}
 
-		List<JobApplicationField> applicationFields = new ArrayList<>();
+		Map<Long, String> filterFields = new HashMap<>();
 		for (CompanyField companyField : company.getFields()) {
 			if (allParams.containsKey(companyField.getName())) {
-				JobApplicationField jaField = new JobApplicationField();
-
-				jaField.setField(companyField);
-				jaField.setValue(allParams.get(companyField.getName()));
+				filterFields.put(companyField.getId(), allParams.get(companyField.getName()));
 			}
 		}
 
-		application.setFields(applicationFields);
+		List<JobApplication> applications = applicationService.filterApplications(application, filterFields);
 
-		List<JobApplication> applications = applicationService.searchApplications(application);
+		return mapper.map(applications, new TypeToken<List<JobApplicationDTO>>() {
+		}.getType());
+	}
+
+	@GetMapping("/search")
+	public List<JobApplicationDTO> searchApplications(@PathVariable("companyId") Long companyId,
+			@RequestParam("text") String text) {
+		List<JobApplication> applications = applicationService.searchApplications(companyId, text);
 
 		return mapper.map(applications, new TypeToken<List<JobApplicationDTO>>() {
 		}.getType());

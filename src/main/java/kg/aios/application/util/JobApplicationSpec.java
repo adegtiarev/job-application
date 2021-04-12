@@ -6,6 +6,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import kg.aios.application.model.Company;
 import kg.aios.application.model.JobApplication;
+import kg.aios.application.model.JobApplicationField;
 import kg.aios.application.model.Position;
 
 public class JobApplicationSpec {
@@ -41,4 +42,19 @@ public class JobApplicationSpec {
 		};
 	}
 
+	public static Specification<JobApplication> likeText(String text) {
+		return (root, query, criteriaBuilder) -> {
+			Join<JobApplication, Position> joinPosition = root.join("position");
+			
+			String likeText = "%" + text + "%";
+			
+			Join<JobApplication, JobApplicationField> joinFields = root.join("fields");
+			
+			return criteriaBuilder.or(criteriaBuilder.like(joinPosition.get("description"), likeText),
+					criteriaBuilder.like(root.get("firstName"), likeText),
+					criteriaBuilder.like(root.get("lastName"), likeText),
+					criteriaBuilder.like(root.get("email"), likeText),
+					criteriaBuilder.like(joinFields.get("value"), likeText));
+		};
+	}
 }

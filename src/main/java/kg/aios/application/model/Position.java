@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "jba_position")
-@SequenceGenerator(name = "job_position_seq", sequenceName = "seq_job_position")
+@SequenceGenerator(name = "job_position_seq", sequenceName = "seq_job_position", initialValue = 5)
 public class Position {
 	@Id
 	@GeneratedValue(generator = "job_position_seq", strategy = GenerationType.SEQUENCE)

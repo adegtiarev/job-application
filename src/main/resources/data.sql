@@ -11,3 +11,5 @@ insert into jba_company_fields(id, company_id, name, type, required) values(6, 2
 
 insert into jba_position(id, description) values (1, 'Java developer');
 insert into jba_position(id, description) values (2, 'Android developer');
+insert into jba_position(id, description) values (3, 'UI/UX designer');
+insert into jba_position(id, description) values (4, 'HR specialist');

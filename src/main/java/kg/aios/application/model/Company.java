@@ -14,7 +14,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "jba_companies")
-@SequenceGenerator(name = "jba_companies_seq", sequenceName = "seq_jba_companies")
+@SequenceGenerator(name = "jba_companies_seq", sequenceName = "seq_jba_companies", initialValue = 3)
 public class Company {
 
 	@Id
