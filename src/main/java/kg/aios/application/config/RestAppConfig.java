@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories("kg.aios.application.dao")
 @EntityScan("kg.aios.application.model")
 @SpringBootApplication
-@ComponentScan({ "kg.aios.application.service", "kg.aios.application.api" })
+@ComponentScan({ "kg.aios.application.service", "kg.aios.application.api", "kg.aios.application.feature" })
 public class RestAppConfig {
 
 	public static void main(String[] args) {

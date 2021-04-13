@@ -12,6 +12,7 @@ import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,10 +30,11 @@ import kg.aios.application.model.JobApplicationField;
 import kg.aios.application.model.Position;
 import kg.aios.application.service.ApplicationService;
 import kg.aios.application.service.CompanyService;
+import kg.aios.application.service.FeatureService;
 import kg.aios.application.util.ParameterRequiredException;
 
 @RestController
-@RequestMapping("/api/application/{companyId}")
+@RequestMapping(value = "/api/application/{companyId}", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ApplicationController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ApplicationController.class);
@@ -42,6 +44,9 @@ public class ApplicationController {
 
 	@Autowired
 	private ApplicationService applicationService;
+
+	@Autowired
+	private FeatureService featureService;
 
 	private ModelMapper mapper = new ModelMapper();
 
@@ -85,6 +90,12 @@ public class ApplicationController {
 		newApplication.setFields(applicationFields);
 
 		newApplication = applicationService.addApplication(newApplication);
+
+		try {
+			featureService.applyFeatures(newApplication);
+		} catch (Exception e) {
+			logger.warn(e.getMessage(), e);
+		}
 
 		return newApplication.getId();
 	}

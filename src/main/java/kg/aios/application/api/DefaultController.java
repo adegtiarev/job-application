@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -48,17 +49,17 @@ public class DefaultController {
 
 	@Autowired
 	private PositionService positionService;
-	
+
 	@Autowired
 	private ApplicationService applicationService;
 
-	@RequestMapping(value = { "/", "" }, method = { RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value = { "/", "" }, method = { RequestMethod.GET, RequestMethod.POST }, produces = MediaType.APPLICATION_JSON_VALUE)
 	public String initialPage() {
 
 		return "It works!";
 	}
 
-	@GetMapping("/positions")
+	@GetMapping(value = "/positions", produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<Position> getPositions() {
 		return positionService.findAllPositions();
 	}
@@ -66,7 +67,7 @@ public class DefaultController {
 	@GetMapping("/populate")
 	public String pupulate() {
 		Random rand = new Random();
-		for (int i = 0; i < 20000; i++) {
+		for (int i = 0; i < 5000; i++) {
 			JobApplication application = new JobApplication();
 			application.setCompany(new Company());
 			application.getCompany().setId((long) (rand.nextInt(2) + 1));
@@ -75,8 +76,8 @@ public class DefaultController {
 
 			application.setFirstName(firstNames[rand.nextInt(firstNames.length)]);
 			application.setLastName(lastNames[rand.nextInt(lastNames.length)]);
-			application.setEmail(randomString() + "@gmail.com");
-			application.setCvUrl(randomString() + "/" + randomString());
+			application.setEmail(application.getFirstName() + "." + application.getLastName() + "@gmail.com");
+			application.setCvUrl("https://cdn.cvpalace.com/" + application.getFirstName() + "." + application.getLastName() + rand.nextInt(1000));
 
 			application.setFields(new ArrayList<>());
 			if (application.getCompany().getId() == 1) {
@@ -85,7 +86,7 @@ public class DefaultController {
 				field.getField().setId(1l); // Phone
 				field.setValue(rand.nextInt(1000000000) + "");
 				application.getFields().add(field);
-				
+
 				field = new JobApplicationField();
 				field.setField(new CompanyField());
 				field.getField().setId(2l); // Experience
@@ -101,32 +102,20 @@ public class DefaultController {
 				field = new JobApplicationField();
 				field.setField(new CompanyField());
 				field.getField().setId(5l); // Linkedin url
-				field.setValue("https://linkedin.com/" + randomString());
+				field.setValue("https://linkedin.com/" + application.getFirstName() + application.getLastName() + rand.nextInt(100));
 				application.getFields().add(field);
 
 				field = new JobApplicationField();
 				field.setField(new CompanyField());
 				field.getField().setId(6l); // Cover letter url
-				field.setValue("https://" + randomString() + ".com/" + randomString());
+				field.setValue("https://coverletter.com/" + application.getFirstName() + application.getLastName() + rand.nextInt(100));
 				application.getFields().add(field);
 			}
-			
+
 			applicationService.addApplication(application);
 		}
 
 		return "completed";
-	}
-
-	private String randomString() {
-		int leftLimit = 97; // letter 'a'
-		int rightLimit = 122; // letter 'z'
-		int targetStringLength = 10;
-		Random random = new Random();
-
-		String generatedString = random.ints(leftLimit, rightLimit + 1).limit(targetStringLength)
-				.collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString();
-
-		return generatedString;
 	}
 
 }

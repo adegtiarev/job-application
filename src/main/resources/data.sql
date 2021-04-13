@@ -13,3 +13,7 @@ insert into jba_position(id, description) values (1, 'Java developer');
 insert into jba_position(id, description) values (2, 'Android developer');
 insert into jba_position(id, description) values (3, 'UI/UX designer');
 insert into jba_position(id, description) values (4, 'HR specialist');
+
+insert into jba_features(id, company_id, bean_name, feature_json) values (1, 1, 'SmtpMailSenderFeature', '{"host":"https://smtp.test.host","port":587,"username":"sdfasdfds","password":"lkfdjskdds","transportProtocol":"subject","smtpAuth":"true","smtpStartTlsEnable":"true","debug":"true","fromMail":"company1@gmail.com","toMail":"hr.company1@gmail.com","subject":"Job Application"}');
+insert into jba_features(id, company_id, bean_name, feature_json) values (2, 1, 'SimpleDebugFeature', '{"level": "debug"}');
+insert into jba_features(id, company_id, bean_name, feature_json) values (3, 2, 'SimpleDebugFeature', '{"level": "info"}');
